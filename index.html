@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>خطة تعلّم البرمجة من الصفر حتى الويب</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,7 +22,14 @@
       --border-strong: #D5CFC2;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'IBM Plex Sans Arabic', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
@@ -31,6 +38,7 @@
       line-height: 1.75;
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
     }
 
     .page-wrap {
@@ -60,18 +68,18 @@
       background-color: var(--accent);
       padding: 3px 11px;
       border-radius: 6px;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .site-header h1 {
-      font-size: clamp(1.65rem, 3vw, 2.2rem);
+      font-size: clamp(1.45rem, 3vw, 2.2rem);
       font-weight: 700;
       color: var(--text);
       line-height: 1.3;
       margin-bottom: 8px;
     }
 
-    .site-header p { font-size: 0.96rem; color: var(--text-muted); }
+    .site-header p { font-size: 0.95rem; color: var(--text-muted); }
 
     .progress-card {
       min-width: 260px;
@@ -124,28 +132,29 @@
       align-items: start;
     }
 
-    @media (max-width: 860px) {
-      .workspace { grid-template-columns: 1fr; gap: 20px; }
-      .progress-card { width: 100%; flex: 1 1 100%; }
-    }
-
-    .stages-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      position: sticky;
-      top: 24px;
-    }
-
-    @media (max-width: 860px) {
-      .stages-nav { position: static; }
-    }
+    .stages-nav { position: sticky; top: 24px; }
 
     .nav-section-label {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 0.78rem;
       font-weight: 600;
       color: var(--text-muted);
-      padding: 0 4px 4px;
+      padding: 0 4px 8px;
+    }
+
+    .swipe-hint {
+      display: none;
+      font-size: 0.74rem;
+      font-weight: 500;
+      color: var(--primary);
+    }
+
+    .stages-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
     .stage-item {
@@ -162,10 +171,11 @@
       align-items: flex-start;
       gap: 12px;
       color: var(--text);
-      transition: background-color 0.15s ease, border-color 0.15s ease;
+      transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
     }
 
     .stage-item:hover { border-color: var(--border-strong); background-color: #FAF8F3; }
+    .stage-item:active { transform: scale(0.99); }
 
     .stage-item.active {
       background-color: var(--card);
@@ -198,7 +208,7 @@
     }
 
     .stage-info { flex: 1; min-width: 0; }
-    .stage-name { font-size: 0.94rem; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 4px; }
+    .stage-name { display: block; font-size: 0.94rem; font-weight: 600; color: var(--text); line-height: 1.4; margin-bottom: 4px; }
 
     .stage-meta-row {
       display: flex;
@@ -225,10 +235,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 28px 30px;
-    }
-
-    @media (max-width: 600px) {
-      .stage-sheet { padding: 20px 18px; }
+      scroll-margin-top: 16px;
     }
 
     .sheet-header {
@@ -259,7 +266,6 @@
       gap: 24px;
       border-bottom: 1px solid var(--border);
       margin-bottom: 22px;
-      overflow-x: auto;
     }
 
     .tab-btn {
@@ -279,6 +285,7 @@
 
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+    .tab-short { display: none; }
 
     .checklist { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 
@@ -286,7 +293,7 @@
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      padding: 12px 14px;
+      padding: 13px 14px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background-color: var(--card);
@@ -299,8 +306,8 @@
     .check-row.checked { background-color: var(--primary-soft); border-color: rgba(74, 124, 111, 0.28); }
 
     .check-box {
-      width: 20px;
-      height: 20px;
+      width: 21px;
+      height: 21px;
       margin-top: 3px;
       border-radius: 5px;
       border: 1.5px solid var(--border-strong);
@@ -350,12 +357,13 @@
     .course-row:last-child { border-bottom: none; }
     .course-row:hover { background-color: #FAF8F3; }
     .course-copy { flex: 1; min-width: 220px; }
-    .course-copy h4 { font-size: 0.96rem; font-weight: 600; color: var(--text); margin-bottom: 3px; }
-    .course-copy p { font-size: 0.85rem; color: var(--text-muted); }
+    .course-copy h4 { font-size: 0.96rem; font-weight: 600; color: var(--text); margin-bottom: 3px; line-height: 1.45; }
+    .course-copy p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.6; }
 
     .course-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
       text-decoration: none;
       font-size: 0.84rem;
@@ -363,7 +371,7 @@
       color: var(--primary);
       background-color: var(--card);
       border: 1px solid var(--primary);
-      padding: 7px 14px;
+      padding: 8px 14px;
       border-radius: 7px;
       white-space: nowrap;
       transition: background-color 0.15s ease, color 0.15s ease;
@@ -379,6 +387,7 @@
       background-color: var(--card);
     }
 
+    .note-block:last-child { margin-bottom: 0; }
     .note-block.project { border-right: 3px solid var(--primary); }
     .note-block.tip { background-color: var(--accent-soft); border-color: var(--accent); border-right: 3px solid #B59D63; }
     .note-block h3 { font-size: 0.96rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
@@ -401,7 +410,7 @@
       font-family: inherit;
       font-size: 0.86rem;
       font-weight: 600;
-      padding: 8px 16px;
+      padding: 9px 16px;
       border-radius: 7px;
       cursor: pointer;
       border: 1px solid var(--border-strong);
@@ -425,6 +434,7 @@
       cursor: pointer;
       text-decoration: underline;
       text-underline-offset: 4px;
+      padding: 6px 4px;
     }
 
     .btn-reset:hover { color: var(--text); }
@@ -446,12 +456,123 @@
       font-weight: 600;
       color: var(--text);
       background-color: var(--accent);
-      padding: 4px 12px;
+      padding: 5px 12px;
       border-radius: 6px;
       font-size: 0.82rem;
     }
 
     .powered-by span { color: var(--primary); font-weight: 700; }
+
+    /* Mobile & Tablet Optimizations */
+    @media (max-width: 860px) {
+      .page-wrap { padding: 20px 14px 40px; }
+      .site-header { gap: 16px; padding-bottom: 18px; margin-bottom: 18px; }
+      .progress-card { width: 100%; flex: 1 1 100%; padding: 12px 14px; }
+      .workspace { grid-template-columns: 1fr; gap: 16px; }
+      .stages-nav { position: static; min-width: 0; }
+      .swipe-hint { display: inline; }
+
+      .stages-list {
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 10px;
+        padding: 2px 2px 10px;
+        scroll-snap-type: x proximity;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+      }
+
+      .stages-list::-webkit-scrollbar { display: none; }
+
+      .stage-item {
+        flex: 0 0 220px;
+        scroll-snap-align: start;
+        border-right: 1px solid var(--border);
+        border-bottom: 3px solid transparent;
+        padding: 11px 12px;
+        gap: 10px;
+      }
+
+      .stage-item.active {
+        border-right-color: var(--border-strong);
+        border-bottom-color: var(--primary);
+        background-color: var(--card);
+      }
+
+      .stage-index { width: 28px; height: 28px; font-size: 0.78rem; }
+      .stage-name { font-size: 0.86rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .stage-meta-row { font-size: 0.74rem; }
+    }
+
+    @media (max-width: 600px) {
+      .site-header p { font-size: 0.88rem; line-height: 1.65; }
+      .stage-sheet { padding: 18px 15px; border-radius: 10px; }
+      .sheet-header { gap: 10px; margin-bottom: 16px; }
+      .sheet-header h2 { font-size: 1.22rem; }
+      .sheet-goal { font-size: 0.88rem; }
+      .duration-tag { font-size: 0.78rem; padding: 4px 10px; }
+
+      .tab-bar {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        background-color: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 4px;
+        margin-bottom: 18px;
+      }
+
+      .tab-btn {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding: 8px 6px;
+        border-radius: 6px;
+        font-size: 0.84rem;
+        text-align: center;
+      }
+
+      .tab-btn.active {
+        background-color: var(--card);
+        color: var(--primary);
+        box-shadow: 0 1px 3px rgba(38, 48, 61, 0.08);
+      }
+
+      .tab-full { display: none; }
+      .tab-short { display: inline; }
+
+      .check-row { padding: 12px; gap: 11px; }
+      .check-box { width: 22px; height: 22px; }
+      .check-text { font-size: 0.9rem; line-height: 1.65; }
+
+      .course-row { padding: 14px; gap: 12px; }
+      .course-copy { min-width: 100%; }
+      .course-copy h4 { font-size: 0.92rem; }
+      .course-btn { width: 100%; padding: 10px 14px; font-size: 0.86rem; }
+
+      .note-block { padding: 15px; }
+      .note-block p { font-size: 0.9rem; }
+
+      .sheet-footer {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 16px;
+      }
+
+      .step-controls { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+      .btn-step { width: 100%; padding: 11px 12px; font-size: 0.88rem; }
+      .btn-reset { align-self: center; }
+
+      .site-footer {
+        margin-top: 28px;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -480,11 +601,14 @@
 
     <main class="workspace">
       <aside class="stages-nav" aria-label="مراحل الخطة">
-        <div class="nav-section-label">المراحل الدراسية (6 مراحل)</div>
-        <div id="stagesList"></div>
+        <div class="nav-section-label">
+          <span>المراحل الدراسية (6 مراحل)</span>
+          <span class="swipe-hint">اسحب للتنقل ←</span>
+        </div>
+        <div class="stages-list" id="stagesList"></div>
       </aside>
 
-      <section class="stage-sheet" aria-live="polite">
+      <section class="stage-sheet" id="stageSheet" aria-live="polite">
         <div class="sheet-header">
           <div>
             <div class="sheet-kicker" id="stageKicker"></div>
@@ -495,9 +619,18 @@
         </div>
 
         <nav class="tab-bar" role="tablist">
-          <button class="tab-btn active" data-tab="topics" role="tab">المواضيع وقائمة الإنجاز</button>
-          <button class="tab-btn" data-tab="courses" role="tab">الكورسات وعناوين البحث</button>
-          <button class="tab-btn" data-tab="project" role="tab">المشروع التطبيقي والنصيحة</button>
+          <button class="tab-btn active" data-tab="topics" role="tab">
+            <span class="tab-full">المواضيع وقائمة الإنجاز</span>
+            <span class="tab-short">المواضيع</span>
+          </button>
+          <button class="tab-btn" data-tab="courses" role="tab">
+            <span class="tab-full">الكورسات وعناوين البحث</span>
+            <span class="tab-short">الكورسات</span>
+          </button>
+          <button class="tab-btn" data-tab="project" role="tab">
+            <span class="tab-full">المشروع التطبيقي والنصيحة</span>
+            <span class="tab-short">المشروع</span>
+          </button>
         </nav>
 
         <div id="tabPanel"></div>
@@ -739,7 +872,8 @@
     ];
 
     const STORAGE_KEY = "roadmap_progress_abdulrahman_v2";
-    let activeIdx = 0;
+    const STAGE_KEY = "roadmap_active_stage_v2";
+    let activeIdx = loadActiveStage();
     let activeTab = "topics";
     let progress = loadProgress();
 
@@ -750,6 +884,20 @@
 
     function saveProgress() {
       try { localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }
+      catch {}
+    }
+
+    function loadActiveStage() {
+      try {
+        const saved = parseInt(localStorage.getItem(STAGE_KEY), 10);
+        return !isNaN(saved) && saved >= 0 && saved < roadmap.length ? saved : 0;
+      } catch {
+        return 0;
+      }
+    }
+
+    function saveActiveStage() {
+      try { localStorage.setItem(STAGE_KEY, String(activeIdx)); }
       catch {}
     }
 
@@ -776,6 +924,15 @@
       document.getElementById("globalCount").textContent = `${done} من ${total} موضوع منجز`;
     }
 
+    function scrollActiveStagePill() {
+      if (window.innerWidth <= 860) {
+        const activeBtn = document.querySelector(".stage-item.active");
+        if (activeBtn) {
+          activeBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+        }
+      }
+    }
+
     function renderSidebar() {
       const wrap = document.getElementById("stagesList");
       wrap.innerHTML = "";
@@ -787,14 +944,19 @@
         btn.innerHTML = `
           <span class="stage-index">${stage.num}</span>
           <span class="stage-info">
-            <span class="stage-name" style="display:block;">${stage.title}</span>
+            <span class="stage-name">${stage.title}</span>
             <span class="stage-meta-row">
               <span>${stage.duration}</span>
               <span class="stage-counter${isComplete ? " complete" : ""}">${st.done}/${st.total}</span>
             </span>
           </span>
         `;
-        btn.addEventListener("click", () => { activeIdx = idx; render(); });
+        btn.addEventListener("click", () => {
+          activeIdx = idx;
+          saveActiveStage();
+          render();
+          scrollActiveStagePill();
+        });
         wrap.appendChild(btn);
       });
     }
@@ -877,27 +1039,41 @@
       renderSheet();
     }
 
+    function goToStage(newIdx) {
+      activeIdx = newIdx;
+      saveActiveStage();
+      render();
+      scrollActiveStagePill();
+      if (window.innerWidth <= 860) {
+        document.getElementById("stageSheet").scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+
     document.querySelectorAll(".tab-btn").forEach(btn => {
       btn.addEventListener("click", () => { activeTab = btn.dataset.tab; renderSheet(); });
     });
 
     document.getElementById("prevBtn").addEventListener("click", () => {
-      if (activeIdx > 0) { activeIdx--; render(); }
+      if (activeIdx > 0) goToStage(activeIdx - 1);
     });
 
     document.getElementById("nextBtn").addEventListener("click", () => {
-      if (activeIdx < roadmap.length - 1) { activeIdx++; render(); }
+      if (activeIdx < roadmap.length - 1) goToStage(activeIdx + 1);
     });
 
     document.getElementById("resetBtn").addEventListener("click", () => {
       if (confirm("هل تريد مسح سجل التقدم والبدء من جديد؟")) {
         progress = {};
+        activeIdx = 0;
         saveProgress();
+        saveActiveStage();
         render();
+        scrollActiveStagePill();
       }
     });
 
     render();
+    scrollActiveStagePill();
   </script>
 </body>
 </html>
